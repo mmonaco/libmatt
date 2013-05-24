@@ -1,27 +1,27 @@
-name := matt
-ver  := 0
+name   := matt
+ver    := 0
+objs   := lib$(name).o
+prefix := /usr/local
 
-objs := lib$(name).o
-
-GCC  = gcc -Wall -O2 -fPIC
+GCC  = gcc -Wall -O2
 
 all: lib$(name).so lib$(name).a
 
 %.o: %.c $(name).h Makefile
-	$(GCC) -c $<
+	$(GCC) -fPIC -c $<
 
 %.so: $(objs)
-	$(GCC) -shared -Wl,-soname,$@.$(ver) $^ -o $@
+	$(GCC) -fPIC -shared -Wl,-soname,$@.$(ver) $^ -o $@
 
 %.a: $(objs)
 	ar -cvr $@ $^
 
 install: all
-	install -m0755 -d $(DESTDIR)/usr/local/{include,lib}/
-	install -m0644    lib$(name).a    $(DESTDIR)/usr/local/lib/
-	install -m0755 -T lib$(name).so   $(DESTDIR)/usr/local/lib/lib$(name).so.$(ver)
-	install -m0644    $(name).h       $(DESTDIR)/usr/local/include
-	ln -sf            lib$(name).so.$(ver) $(DESTDIR)/usr/local/lib/lib$(name).so
+	install -m0755 -d $(DESTDIR)/$(prefix)/{include,lib}/
+	install -m0644    lib$(name).a    $(DESTDIR)/$(prefix)/lib/
+	install -m0755 -T lib$(name).so   $(DESTDIR)/$(prefix)/lib/lib$(name).so.$(ver)
+	install -m0644    $(name).h       $(DESTDIR)/$(prefix)/include
+	ln -sf            lib$(name).so.$(ver) $(DESTDIR)/$(prefix)/lib/lib$(name).so
 
 clean:
 	$(RM) $(objs) lib$(name).so lib$(name).a
